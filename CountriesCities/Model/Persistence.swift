@@ -13,9 +13,46 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
+
+        let city1 = City(context: viewContext)
+        city1.name = "London"
+
+        let city2 = City(context: viewContext)
+        city2.name = "Bath"
+
+        let city3 = City(context: viewContext)
+        city3.name = "Paris"
+
+        let city4 = City(context: viewContext)
+        city4.name = "La Rochelle"
+
+        let city5 = City(context: viewContext)
+        city5.name = "Melbourne"
+
+        let city6 = City(context: viewContext)
+        city6.name = "Sydney"
+
+        let country1 = Country(context: viewContext)
+        country1.name = "UK"
+        country1.timestamp = Date()
+        country1.addToCity(city1)
+        country1.addToCity(city2)
+
+        let country2 = Country(context: viewContext)
+        country2.name = "France"
+        country2.timestamp = Date()
+        country2.addToCity(city3)
+        country2.addToCity(city4)
+
+        let country3 = Country(context: viewContext)
+        country3.name = "Australia"
+        country3.timestamp = Date()
+        country3.addToCity(city5)
+        country3.addToCity(city6)
+
         for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
+            let newCountry = Country(context: viewContext)
+            newCountry.timestamp = Date()
         }
         do {
             try viewContext.save()
@@ -52,5 +89,22 @@ struct PersistenceController {
             }
         })
         container.viewContext.automaticallyMergesChangesFromParent = true
+        container.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+    }
+
+    func save() throws {
+        let context = container.viewContext
+        guard context.hasChanges else { return }
+        do {
+            try context.save()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+    func delete(_ object: NSManagedObject) throws {
+        let context = container.viewContext
+        context.delete(object)
+        try context.save()
     }
 }
