@@ -13,8 +13,8 @@ struct AddCountryView: View {
     @Environment(\.dismiss) var dismiss
     @State var countryName = ""
     @State var cityName = ""
-//    @State var selectedFlag: FlagListView
-    
+    @State var countryFlag = ""
+    @State var selectedFlag: String = "FR"
     @ObservedObject var vm = CountryViewModel()
 
     var body: some View {
@@ -25,6 +25,19 @@ struct AddCountryView: View {
                 } header: {
                     Text("Add a country")
                         .foregroundColor(.accentColor)
+                        .accessibilityHint("Country is a mandatory field")
+                }
+                Section {
+                    Picker("Pick the appropriate flag", selection: $selectedFlag) {
+                        ForEach(NSLocale.isoCountryCodes, id: \.self) { flag in
+                            Text(vm.countryFlag(flag) + "  " + (Locale.current.localizedString(forRegionCode: flag) ?? ""))
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+                    .colorMultiply(.accentColor)
+                } header: {
+                    Text("Add a flag")
+                        .foregroundColor(.accentColor)
                 }
                 Section {
                     TextField("City", text: $cityName)
@@ -32,18 +45,12 @@ struct AddCountryView: View {
                     Text("Add a city")
                         .foregroundColor(.accentColor)
                 }
-//                Section {
-//                    Picker("Choose a country flag", selection: $selectedFlag) {
-//                        ForEach(FlagListView.allCases, id: \.self) {
-//                            Text(String($0))
-//                        }
-//                    }
-//                    .pickerStyle(.automatic)
-//                    .colorMultiply(.accentColor)
-//                } header: {
-//                    Text("Add a flag")
-//                        .foregroundColor(.accentColor)
-//                }
+                //                Section {
+                //                    TextField("Country", text: $countryFlag)
+                //                } header: {
+                //                    Text("Add a flag")
+                //                        .foregroundColor(.accentColor)
+                //                }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -55,7 +62,7 @@ struct AddCountryView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
-                        let _ = vm.addCountry(name: countryName, cityName: cityName)
+                        let _ = vm.addCountry(name: countryName, cityName: cityName, flag: selectedFlag)
                         dismiss()
                     } label: {
                         Text("Add")
@@ -63,11 +70,11 @@ struct AddCountryView: View {
                     .disabled(countryName == "")
                 }
             }
-            .navigationTitle("Add country and city")
+            .navigationTitle("Add country, flag and city")
             .scrollContentBackground(.hidden)
 
             Button {
-                let _ = vm.addCountry(name: countryName, cityName: cityName)
+                let _ = vm.addCountry(name: countryName, cityName: cityName, flag: selectedFlag)
                 dismiss()
             } label: {
                 Text("Add")

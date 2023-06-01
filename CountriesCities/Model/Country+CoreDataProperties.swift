@@ -19,6 +19,7 @@ extension Country {
     @NSManaged public var timestamp: Date?
     @NSManaged public var name: String?
     @NSManaged public var image: String?
+    @NSManaged public var flag: String?
     @NSManaged public var city: NSSet?
 //    @NSManaged public var city: NSOrderedSet?
 }

@@ -10,6 +10,8 @@ import SwiftUI
 struct GrowingButtonView: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
+            .font(.title3)
+            .fontWeight(.semibold)
             .padding()
             .background(.tint)
             .foregroundColor(.white)

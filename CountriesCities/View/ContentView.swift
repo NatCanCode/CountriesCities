@@ -30,6 +30,7 @@ struct ContentView: View {
                     }
                 label: {
                     Text(country.wrappedName)
+                        .font(.title3)
                 }
                 .swipeActions {
                     Button {
@@ -64,7 +65,7 @@ struct ContentView: View {
             Button(action: {
                 showingAddCountry.toggle()
             }, label: {
-                Text("Add Country and City")
+                Text("Add Country, flag and City")
             })
             .sheet(isPresented: $showingAddCountry) {
                 AddCountryView()

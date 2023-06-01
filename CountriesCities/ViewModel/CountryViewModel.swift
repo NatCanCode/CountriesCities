@@ -11,6 +11,8 @@ import CoreData
 @MainActor class CountryViewModel: ObservableObject {
     init() { }
 
+    //    let vc = PersistenceController.shared.container.viewContext
+    //    Had to update let by var to be able to run the unit tests:
     let vc = PersistenceController.shared.container.viewContext
 
     func save() {
@@ -22,11 +24,12 @@ import CoreData
         }
     }
 
-    func addCountry(name: String, cityName: String?) -> Country {
+    func addCountry(name: String, cityName: String?, flag: String) -> Country {
         let country = Country(context: vc)
         country.name = name
         country.timestamp = Date()
         country.city = NSSet(array: country.cityArray)
+        country.flag = flag
         if !cityName!.isEmpty {
             let city = City(context: vc)
             city.name = cityName
@@ -50,5 +53,11 @@ import CoreData
         country.addToCity(city)
         save()
         return city
+    }
+
+    func countryFlag(_ countryCode: String) -> String {
+        String(String.UnicodeScalarView(countryCode.unicodeScalars.compactMap {
+            UnicodeScalar(127397 + $0.value)
+        }))
     }
 }
